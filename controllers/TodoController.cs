@@ -1,19 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using todo.models;
+using todo.dtos.request;
+using todo.dtos.response;
+using todo.services;
 
 namespace todo.controllers;
 
 [Route("todo")]
-public class TodoController(TodoContext todoContext) : ControllerBase
+[ApiController]
+public class TodoController(TodoServices todoServices) : ControllerBase
 {
-    private readonly TodoContext _todoContext = todoContext;
-
-    [HttpGet()]
-    public Task<string> GetAll()
+    [HttpGet]
+    public async Task<ActionResult<List<TodoResponse>>> GetAll()
     {
-        var promise = new TaskCompletionSource<string>();
-        promise.SetResult("Hello world");
-        return promise.Task;
+        return await todoServices.GetAll();
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<TodoResponse>> Post(TodoPostRequest request)
+    {
+        return await todoServices.Post(request);;
     }
 }

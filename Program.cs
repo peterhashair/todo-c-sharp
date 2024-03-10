@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using todo.configs;
 using todo.models;
+using todo.services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+builder.Services.AddScoped<TodoServices>();
 var db = builder.Configuration.GetSection("DB").Get<DbConfig>();
 builder.Services.AddDbContext<TodoContext>(options =>
     options.UseNpgsql($"Host={db.host};Database={db.database};Username={db.username};Password={db.password}"));
@@ -21,16 +24,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 app.UseHttpsRedirection();
 app.MapControllers();
 app.UseRouting();
 app.Run();
 
-public struct DbConfig
-{
-    public string host { get; }
-    public string username { get; }
-    public string password { get; }
-    public string database { get; }
-}
