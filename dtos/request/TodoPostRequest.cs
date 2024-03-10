@@ -5,10 +5,9 @@ namespace todo.dtos.request;
 
 public class TodoPostRequest
 {
-    public string title { get; set; }
+    public required string title { get; set; }
 
-    [Required]
-    public Status status { get; set; }
+    public required Status status { get; set; }
     
     public string? description { get; set; }
 }

@@ -14,7 +14,14 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<TodoServices>();
 var db = builder.Configuration.GetSection("DB").Get<DbConfig>();
 builder.Services.AddDbContext<TodoContext>(options =>
-    options.UseNpgsql($"Host={db.host};Database={db.database};Username={db.username};Password={db.password}"));
+{
+    if (db == null)
+    {
+        throw new Exception("Please setup database variables");
+    }
+
+    options.UseNpgsql($"Host={db.host};Database={db.database};Username={db.username};Password={db.password}");
+});
 
 var app = builder.Build();
 
@@ -24,8 +31,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.UseHttpsRedirection();
 app.MapControllers();
 app.UseRouting();
 app.Run();
-
